@@ -100,6 +100,7 @@ private:
 
 private slots:
     void setLabelToModified(bool modified);
+    void onCPUFeatureChange(Enu::CPUType newFeatures);
 
 signals:
     void undoAvailable(bool);

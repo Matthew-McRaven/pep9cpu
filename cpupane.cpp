@@ -656,7 +656,7 @@ void CpuPane::updateMainBusState()
 
 bool CpuPane::step(QString &errorString)
 {
-    switch (Pep::cpuFeatures) {
+    switch (Pep::getPep()->getCPUFeatures()) {
     case Enu::OneByteDataBus:
         return stepOneByteDataBus(errorString);
         break;

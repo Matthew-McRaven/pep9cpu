@@ -25,11 +25,22 @@
 #include <QMap>
 
 #include "enu.h"
-
-class Pep
+#include <QObject>
+class Pep : public QObject
 {
+    Q_OBJECT
+    // Machine model state:
+private:
+    static Enu::CPUType cpuFeatures;
+    static Pep* _self;
+protected:
+    explicit Pep(QObject *parent=nullptr);
+    virtual ~Pep();
+signals:
+    void CPUFeaturesChanged(Enu::CPUType newType);
 public:
     // Fonts:
+    static Pep* getPep();
     static const QString codeFont;
     static const int codeFontSize;
     static const int codeFontSizeSmall;
@@ -39,15 +50,12 @@ public:
     static const int labelFontSizeSmall;
     static const QString cpuFont;
     static const int cpuFontSize;
-
     static QString getSystem();
-
+    void setCPUFeatures(Enu::CPUType);
+    Enu::CPUType getCPUFeatures();
     // Function to read text from a resource file
     static QString resToString(QString fileName);
     static QString addCycleNumbers(QString codeString);
-
-    // Machine model state:
-    static Enu::CPUType cpuFeatures;
 
     // Maps between mnemonic enums and strings
     static QMap<Enu::EMnemonic, QString> decControlToMnemonMap;  // unused as of this writing
@@ -65,6 +73,7 @@ public:
     static QMap<QString, Enu::EMnemonic> mnemonToRegSpecMap;
     static QMap<QString, Enu::EMnemonic> mnemonToStatusSpecMap;
     static void initEnumMnemonMaps();
+private:
 
 };
 

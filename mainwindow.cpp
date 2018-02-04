@@ -491,7 +491,8 @@ void MainWindow::on_actionSystem_Clear_Memory_triggered()
 
 void MainWindow::on_actionOne_Byte_Data_Bus_Model_triggered()
 {
-    Pep::cpuFeatures = Enu::OneByteDataBus;
+
+    Pep::getPep()->setCPUFeatures(Enu::OneByteDataBus);
     Pep::initEnumMnemonMaps();
     Sim::initMRegs();
     Sim::clearMemory();
@@ -529,7 +530,7 @@ void MainWindow::on_actionOne_Byte_Data_Bus_Model_triggered()
 
 void MainWindow::on_actionTwo_Byte_Data_Bus_Model_triggered()
 {
-    Pep::cpuFeatures = Enu::TwoByteDataBus;
+    Pep::getPep()->setCPUFeatures(Enu::TwoByteDataBus);
     Pep::initEnumMnemonMaps();
     Sim::initMRegs();
     Sim::clearMemory();

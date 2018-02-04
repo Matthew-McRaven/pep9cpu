@@ -251,7 +251,7 @@ bool Sim::getBBusOut(quint8 &out, QString &errorString,
 }
 
 bool Sim::isCorrectALUInput(int ALUFn, CpuGraphicsItems *cpuPaneItems) {
-    switch (Pep::cpuFeatures) {
+    switch (Pep::getPep()->getCPUFeatures()) {
     case Enu::OneByteDataBus:
         return OneByteModel::isCorrectALUInput(ALUFn, cpuPaneItems);
         break;
@@ -447,7 +447,7 @@ bool Sim::getCMuxOut(quint8 &out, QString &errorString,
 bool Sim::getAMuxOut(quint8 &out, QString &errorString,
                      CpuGraphicsItems *cpuPaneItems)
 {
-    switch (Pep::cpuFeatures) {
+    switch (Pep::getPep()->getCPUFeatures()) {
     case Enu::OneByteDataBus:
         return OneByteModel::getAMuxOut(out, errorString, cpuPaneItems);
         break;
@@ -464,7 +464,7 @@ bool Sim::getAMuxOut(quint8 &out, QString &errorString,
 bool Sim::getMDRMuxOut(quint8& out, QString& errorString,
                        CpuGraphicsItems *cpuPaneItems)
 {
-    switch (Pep::cpuFeatures) {
+    switch (Pep::getPep()->getCPUFeatures()) {
     case Enu::OneByteDataBus:
         return OneByteModel::getMDRMuxOut(out, errorString, cpuPaneItems);
         break;
@@ -483,7 +483,7 @@ bool Sim::getMARMuxOut(quint8& mara, quint8& marb,
                        QString& errorString,
                        CpuGraphicsItems *cpuPaneItems)
 {
-    switch (Pep::cpuFeatures) {
+    switch (Pep::getPep()->getCPUFeatures()) {
     case Enu::OneByteDataBus:
         errorString.append("CPU model does not have an MARMux.");
         return false;
@@ -501,7 +501,7 @@ bool Sim::getMARMuxOut(quint8& mara, quint8& marb,
 bool Sim::getMDROMuxOut(quint8& out, QString& errorString,
                         CpuGraphicsItems *cpuPaneItems)
 {
-    switch (Pep::cpuFeatures) {
+    switch (Pep::getPep()->getCPUFeatures()) {
     case Enu::OneByteDataBus:
         errorString.append("CPU model does not have an MDROMux.");
         return false;
@@ -519,7 +519,7 @@ bool Sim::getMDROMuxOut(quint8& out, QString& errorString,
 bool Sim::getMDREMuxOut(quint8& out, QString& errorString,
                         CpuGraphicsItems *cpuPaneItems)
 {
-    switch (Pep::cpuFeatures) {
+    switch (Pep::getPep()->getCPUFeatures()) {
     case Enu::OneByteDataBus:
         errorString.append("CPU model does not have an MDREMux.");
         return false;
@@ -537,7 +537,7 @@ bool Sim::getMDREMuxOut(quint8& out, QString& errorString,
 bool Sim::getEOMuxOut(quint8& out, QString& errorString,
                       CpuGraphicsItems *cpuPaneItems)
 {
-    switch (Pep::cpuFeatures) {
+    switch (Pep::getPep()->getCPUFeatures()) {
     case Enu::OneByteDataBus:
         errorString.append("CPU model does not have an EOMux.");
         return false;

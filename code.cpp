@@ -98,7 +98,7 @@ QString MicroCode::getObjectCode()
     //  value produces left-aligned text.
 
     QString str = "";
-    if (Pep::cpuFeatures == Enu::OneByteDataBus) {
+    if (Pep::getPep()->getCPUFeatures() == Enu::OneByteDataBus) {
         str.append(cLoadCk == -1 ? "  " : QString("%1").arg(cLoadCk, -2));
         str.append(cC == -1 ? "   " : QString("%1").arg(cC, -3));
         str.append(cB == -1 ? "   " : QString("%1").arg(cB, -3));
@@ -119,7 +119,7 @@ QString MicroCode::getObjectCode()
         str.append(cMemWrite == -1 ? "  " : QString("%1").arg(cMemWrite, -2));
         str.append(cMemRead == -1 ? "  " : QString("%1").arg(cMemRead, -2));
     }
-    else if (Pep::cpuFeatures == Enu::TwoByteDataBus) {
+    else if (Pep::getPep()->getCPUFeatures() == Enu::TwoByteDataBus) {
         str.append(cLoadCk == -1 ? "  " : QString("%1").arg(cLoadCk, -2));
         str.append(cC == -1 ? "   " : QString("%1").arg(cC, -3));
         str.append(cB == -1 ? "   " : QString("%1").arg(cB, -3));
@@ -151,7 +151,7 @@ QString MicroCode::getObjectCode()
 QString MicroCode::getSourceCode()
 {
     QString str = "";
-    if (Pep::cpuFeatures == Enu::OneByteDataBus) {
+    if (Pep::getPep()->getCPUFeatures() == Enu::OneByteDataBus) {
         if (cMemRead != -1) { str.append("MemRead, "); }
         if (cMemWrite != -1) { str.append("MemWrite, "); }
         if (cA != -1) { str.append("A=" + QString("%1").arg(cA) + ", "); }
@@ -180,7 +180,7 @@ QString MicroCode::getSourceCode()
             str.append(" " + cComment);
         }
     }
-    else if (Pep::cpuFeatures == Enu::TwoByteDataBus) {
+    else if (Pep::getPep()->getCPUFeatures() == Enu::TwoByteDataBus) {
         if (cMemRead != -1) { str.append("MemRead, "); }
         if (cMemWrite != -1) { str.append("MemWrite, "); }
         if (cA != -1) { str.append("A=" + QString("%1").arg(cA) + ", "); }
@@ -217,7 +217,7 @@ QString MicroCode::getSourceCode()
 }
 
 bool MicroCode::has(Enu::EMnemonic field) {
-    if (Pep::cpuFeatures == Enu::OneByteDataBus) {
+    if (Pep::getPep()->getCPUFeatures() == Enu::OneByteDataBus) {
         switch (field) {
         case Enu::LoadCk: return cLoadCk != -1;
         case Enu::C: return cC != -1;
@@ -241,7 +241,7 @@ bool MicroCode::has(Enu::EMnemonic field) {
         default: return true;
         }
     }
-    else if (Pep::cpuFeatures == Enu::TwoByteDataBus) {
+    else if (Pep::getPep()->getCPUFeatures() == Enu::TwoByteDataBus) {
         switch (field) {
         case Enu::LoadCk: return cLoadCk != -1;
         case Enu::C: return cC != -1;
@@ -273,7 +273,7 @@ bool MicroCode::has(Enu::EMnemonic field) {
 }
 
 void MicroCode::set(Enu::EMnemonic field, int value) {
-    if (Pep::cpuFeatures == Enu::OneByteDataBus) {
+    if (Pep::getPep()->getCPUFeatures() == Enu::OneByteDataBus) {
         switch (field) {
         case Enu::LoadCk: cLoadCk = value; break;
         case Enu::C: cC = value; break;
@@ -297,7 +297,7 @@ void MicroCode::set(Enu::EMnemonic field, int value) {
         default: break;
         }
     }
-    else if (Pep::cpuFeatures == Enu::TwoByteDataBus) {
+    else if (Pep::getPep()->getCPUFeatures() == Enu::TwoByteDataBus) {
         switch (field) {
         case Enu::LoadCk: cLoadCk = value; break;
         case Enu::C: cC = value; break;

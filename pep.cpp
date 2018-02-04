@@ -23,7 +23,6 @@
 #include <QDebug>
 #include <QString>
 #include <QStringList>
-
 #include "pep.h"
 
 using namespace Enu;
@@ -38,6 +37,27 @@ const int Pep::labelFontSize = getSystem() == "Windows" ? 8 : (getSystem() == "M
 const int Pep::labelFontSizeSmall = getSystem() == "Windows" ? 7 : (getSystem() == "Mac" ? 10 : 8);
 const QString Pep::cpuFont = getSystem() == "Windows" ? "Verdana" : (getSystem() == "Mac" ? "Lucida Grande" : "Ubuntu");
 const int Pep::cpuFontSize = getSystem() == "Windows" ? 8 : (getSystem() == "Mac" ? 11 : 8);
+Enu::CPUType Pep::cpuFeatures = Enu::OneByteDataBus;
+Pep* Pep::_self=nullptr;
+Pep::Pep(QObject *parent): QObject(parent)
+{
+
+}
+
+Pep::~Pep()
+{
+
+}
+
+Pep *Pep::getPep()
+{
+    if(Pep::_self==nullptr){
+        _self = new Pep();
+    }
+    return _self;
+}
+
+
 
 QString Pep::getSystem() {
     #ifdef Q_WS_X11
@@ -61,6 +81,21 @@ QString Pep::getSystem() {
     #endif
 
     return QString("No system");
+}
+
+void Pep::setCPUFeatures(Enu::CPUType features)
+{
+    if(features==Pep::cpuFeatures){
+        return; //No feature change, so return.
+    }
+    auto temp = Pep::cpuFeatures;
+    Pep::cpuFeatures=features;
+    emit CPUFeaturesChanged(features);
+}
+
+CPUType Pep::getCPUFeatures()
+{
+    return Pep::cpuFeatures;
 }
 
 QString Pep::resToString(QString fileName) {
@@ -93,7 +128,7 @@ QString Pep::addCycleNumbers(QString codeString) {
 }
 
 // Machine model state:
-Enu::CPUType Pep::cpuFeatures = OneByteDataBus;
+//Enu::CPUType Pep::cpuFeatures = OneByteDataBus;
 
 //QMap<Enu::EMnemonic, QString> Pep::decControlToMnemonMap; // unused as of this writing
 QMap<Enu::EMnemonic, QString> Pep::memControlToMnemonMap;
@@ -121,10 +156,10 @@ void Pep::initEnumMnemonMaps()
     mnemonToDecControlMap.insert("CMUX", CMux);
     mnemonToDecControlMap.insert("ALU", ALU);
     mnemonToDecControlMap.insert("CSMUX", CSMux);
-    if (Pep::cpuFeatures == OneByteDataBus) {
+    if (Pep::getPep()->getCPUFeatures() == OneByteDataBus) {
         mnemonToDecControlMap.insert("MDRMUX", MDRMux);
     }
-    else if (Pep::cpuFeatures == TwoByteDataBus){
+    else if (Pep::getPep()->getCPUFeatures() == TwoByteDataBus){
         mnemonToDecControlMap.insert("MARMUX", MARMux);
         mnemonToDecControlMap.insert("MDROMUX", MDROMux);
         mnemonToDecControlMap.insert("MDREMUX", MDREMux);
@@ -143,10 +178,10 @@ void Pep::initEnumMnemonMaps()
     clockControlToMnemonMap.insert(VCk, "VCk");         mnemonToClockControlMap.insert("VCK", VCk);
     clockControlToMnemonMap.insert(ZCk, "ZCk");         mnemonToClockControlMap.insert("ZCK", ZCk);
     clockControlToMnemonMap.insert(NCk, "NCk");         mnemonToClockControlMap.insert("NCK", NCk);
-    if (Pep::cpuFeatures == OneByteDataBus) {
+    if (Pep::getPep()->getCPUFeatures() == OneByteDataBus) {
         clockControlToMnemonMap.insert(MDRCk, "MDRCk");     mnemonToClockControlMap.insert("MDRCK", MDRCk);
     }
-    else if (Pep::cpuFeatures == TwoByteDataBus){
+    else if (Pep::getPep()->getCPUFeatures() == TwoByteDataBus){
         clockControlToMnemonMap.insert(MDROCk, "MDROCk");     mnemonToClockControlMap.insert("MDROCK", MDROCk);
         clockControlToMnemonMap.insert(MDRECk, "MDRECk");     mnemonToClockControlMap.insert("MDRECK", MDRECk);
     }

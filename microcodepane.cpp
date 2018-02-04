@@ -55,7 +55,7 @@ MicrocodePane::MicrocodePane(QWidget *parent) :
 
     connect(editor->document(), SIGNAL(undoAvailable(bool)), this, SIGNAL(undoAvailable(bool)));
     connect(editor->document(), SIGNAL(redoAvailable(bool)), this, SIGNAL(redoAvailable(bool)));
-
+    connect(Pep::getPep(),SIGNAL(CPUFeaturesChanged(Enu::CPUType)),this,SLOT(onCPUFeatureChange(Enu::CPUType)));
     editor->setFocus();
 }
 
@@ -292,6 +292,11 @@ void MicrocodePane::setLabelToModified(bool modified)
         temp.chop(1);
         ui->label->setText(temp);
     }
+}
+
+void MicrocodePane::onCPUFeatureChange(Enu::CPUType newFeatures)
+{
+    initCPUModelState();
 }
 
 void MicrocodePane::changeEvent(QEvent *e)

@@ -35,8 +35,7 @@ PepHighlighter::PepHighlighter(QTextDocument *parent)
     oprndFormat.setForeground(Qt::darkBlue);
     oprndFormat.setFontWeight(QFont::Bold);
     QStringList oprndPatterns;
-#pragma message("todo: update to accomodate both one byte and two byte data busses")
-    if (Pep::cpuFeatures == Enu::OneByteDataBus) {
+    if (Pep::getPep()->getCPUFeatures() == Enu::OneByteDataBus) {
         oprndPatterns << "\\bLoadCk\\b" << "\\bC\\b" << "\\bB\\b"
                 << "\\bA\\b" << "\\bMARCk\\b" << "\\bMDRCk\\b"
                 << "\\bAMux\\b" << "\\bMDRMux\\b" << "\\bCMux\\b"
@@ -49,7 +48,7 @@ PepHighlighter::PepHighlighter(QTextDocument *parent)
                 << "\\bT1\\b" << "\\bT2\\b" << "\\bT3\\b" << "\\bT4\\b"
                 << "\\bT5\\b" << "\\bT6\\b" << "\\bMem\\b";
     }
-    else if (Pep::cpuFeatures == Enu::TwoByteDataBus){
+    else if (Pep::getPep()->getCPUFeatures() == Enu::TwoByteDataBus){
         oprndPatterns << "\\bLoadCk\\b" << "\\bC\\b" << "\\bB\\b"
                 << "\\bA\\b" << "\\bMARCk\\b" << "\\bMARMux\\b"
                 << "\\bMDROCk\\b" << "\\bMDRECk\\b" << "\\bMDROMux\\b" << "\\bMDREMux\\b" << "\\bEOMux\\b" << "\\bCMux\\b"
