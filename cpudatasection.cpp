@@ -290,6 +290,8 @@ bool CPUDataSection::getStatusBit(Enu::EStatusBit statusBit) const
         return(NZVCSbits&Enu::CMask);
     case Enu::STATUS_S:
         return(NZVCSbits&Enu::SMask);
+    default:
+        return false;
     }
 }
 
@@ -448,7 +450,7 @@ void CPUDataSection::setStatusBit(Enu::EStatusBit statusBit, bool val)
     quint8 old = NZVCSbits;
     onSetStatusBit(statusBit,val);
     //Check if old is equal to new after attempting to set it, as there isn't a simple test for bit math
-    if(old==val)return; //Prevent signal from being emitted if no value changed
+    if((bool)(old&statusBit)==val)return; //Prevent signal from being emitted if no value changed
     emit statusBitChanged(statusBit,val);
 }
 
@@ -542,7 +544,7 @@ void CPUDataSection::stepOneByte() noexcept
     {
         hadDataError=true;
         errorMessage="No values on A & B during MARCk";
-        return false;
+        return;
     }
 
     //LoadCk
