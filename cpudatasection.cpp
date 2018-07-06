@@ -524,8 +524,8 @@ void CPUDataSection::stepOneByte() noexcept
     //Set up all variables needed by stepping calculation
     Enu::EALUFunc aluFunc = (Enu::EALUFunc) controlSignals[Enu::ALU];
     quint8 a = 0, b = 0, c = 0, alu = 0, NZVC = 0;
-    bool hasA=valueOnABus(a),hasB=valueOnBBus(b),hasC=valueOnCBus(c), statusBitError = false;
-    calculateALUOutput(alu,NZVC);
+    bool hasA = valueOnABus(a), hasB = valueOnBBus(b), hasC = valueOnCBus(c), statusBitError = false;
+    bool hasALUOutput = calculateALUOutput(alu,NZVC);
 
     //Handle write to memory
     if(mainBusState == Enu::MemWriteReady)
@@ -599,35 +599,46 @@ void CPUDataSection::stepOneByte() noexcept
     //NCk
     if(clockSignals[Enu::NCk])
     {
-        if(aluFunc!=Enu::UNDEFINED_func) setStatusBit(Enu::STATUS_N,Enu::NMask & NZVC);
+        if(aluFunc!=Enu::UNDEFINED_func && hasALUOutput) setStatusBit(Enu::STATUS_N,Enu::NMask & NZVC);
         else statusBitError = true;
     }
 
     //ZCk
     if(clockSignals[Enu::ZCk])
     {
-        if(aluFunc!=Enu::UNDEFINED_func) setStatusBit(Enu::STATUS_Z,Enu::ZMask & NZVC);
+        if(aluFunc!=Enu::UNDEFINED_func && hasALUOutput)
+        {
+            if(controlSignals[Enu::AndZ]==0)
+            {
+                setStatusBit(Enu::STATUS_Z,Enu::ZMask & NZVC);
+            }
+            else if(controlSignals[Enu::AndZ]==1)
+            {
+                setStatusBit(Enu::STATUS_Z,(bool)(Enu::ZMask & NZVC) && getStatusBit(Enu::STATUS_Z));
+            }
+            else statusBitError = true;
+        }
         else statusBitError = true;
     }
 
     //VCk
     if(clockSignals[Enu::VCk])
     {
-        if(aluFunc!=Enu::UNDEFINED_func) setStatusBit(Enu::STATUS_V,Enu::VMask & NZVC);
+        if(aluFunc!=Enu::UNDEFINED_func && hasALUOutput) setStatusBit(Enu::STATUS_V,Enu::VMask & NZVC);
         else statusBitError = true;
     }
 
     //CCk
     if(clockSignals[Enu::CCk])
     {
-        if(aluFunc!=Enu::UNDEFINED_func) setStatusBit(Enu::STATUS_C,Enu::CMask & NZVC);
+        if(aluFunc!=Enu::UNDEFINED_func && hasALUOutput) setStatusBit(Enu::STATUS_C,Enu::CMask & NZVC);
         else statusBitError = true;
     }
 
     //SCk
     if(clockSignals[Enu::SCk])
     {
-        if(aluFunc!=Enu::UNDEFINED_func) setStatusBit(Enu::STATUS_S,Enu::CMask & NZVC);
+        if(aluFunc!=Enu::UNDEFINED_func && hasALUOutput) setStatusBit(Enu::STATUS_S,Enu::CMask & NZVC);
         else statusBitError = true;
     }
 
@@ -771,6 +782,7 @@ void CPUDataSection::stepTwoByte() noexcept
 
     }
 
+
     //NCk
     if(clockSignals[Enu::NCk])
     {
@@ -779,11 +791,21 @@ void CPUDataSection::stepTwoByte() noexcept
         else statusBitError = true;
     }
 
-    //If no ALU output, don't set flags.
     //ZCk
     if(clockSignals[Enu::ZCk])
     {
-        if(aluFunc!=Enu::UNDEFINED_func && hasALUOutput) setStatusBit(Enu::STATUS_Z,Enu::ZMask & NZVC);
+        if(aluFunc!=Enu::UNDEFINED_func && hasALUOutput)
+        {
+            if(controlSignals[Enu::AndZ]==0)
+            {
+                setStatusBit(Enu::STATUS_Z,Enu::ZMask & NZVC);
+            }
+            else if(controlSignals[Enu::AndZ]==1)
+            {
+                setStatusBit(Enu::STATUS_Z,(bool)(Enu::ZMask & NZVC) && getStatusBit(Enu::STATUS_Z));
+            }
+            else statusBitError = true;
+        }
         else statusBitError = true;
     }
 
@@ -914,7 +936,7 @@ void CPUDataSection::onClearMemory() noexcept
     clearMemory();
 }
 
-void CPUDataSection::onCPUFeaturesChanged(Enu::CPUType newFeatures) throw(Enu::InvalidCPUMode)
+void CPUDataSection::onCPUFeaturesChanged(Enu::CPUType newFeatures)
 {
     //Check that the CPU mode is valid, so that no other code has to check.
     //It would be better to crash now than to have a strange error pop up on step(...) later
